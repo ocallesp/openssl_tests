@@ -6,10 +6,10 @@ LDFLAGS	= -lssl -lcrypto
 all: swupd_sign swupd_verify
 
 swupd_sign: swupd_sign.c
-	$(CC) $< -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
 swupd_verify: swupd_verify.c
-	$(CC) $< -o $@ $(LDFLAGS)
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
 clean: 
 	-$(RM) swupd_sign swupd_verify *.sign*

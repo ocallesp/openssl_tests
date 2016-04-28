@@ -7,7 +7,7 @@
 #include <openssl/ssl.h>
 
 
-static const char *cert_filename = "cert.pem";
+static const char *cert_filename = "swupd.server.cert.pem";
 
 void verify_file(const char *data_filename);
 void verify_signature(FILE *fp_data, EVP_PKEY *pkey, FILE *fp_sig);

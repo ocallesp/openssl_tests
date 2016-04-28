@@ -10,9 +10,8 @@
 static FILE *fp_privkey = NULL;
 static FILE *fp_sig = NULL;
 static EVP_PKEY *pkey = NULL;
-//static const char *privatekey_filename = "key.pem";
-static const char *privatekey_filename = "key_encrypted.pem";
-static const char pass[] = "clave";
+static const char *privatekey_filename = "swupd.server.key.pass.pem";
+static const char pass[] = "swupd";
 bool enable_signing = true;
 bool initialized = false;
 
@@ -21,6 +20,7 @@ bool signature_terminate(void);
 void signature_sign(const char *data_filename);
 static char * get_signature_filename(const char *data_filename);
 static void create_signature(FILE *fp_data);
+void add_ciphers(void);
 
 int main(int argc, char **argv)
 {
@@ -36,7 +36,6 @@ int main(int argc, char **argv)
     }
 
     signature_sign(data_filename);
-    signature_sign("archivo.txt");
 
     signature_terminate();
 exit:
@@ -49,7 +48,9 @@ bool signature_initialize(void)
         return false;
     }
 
-    OpenSSL_add_all_algorithms();
+//    OpenSSL_add_all_algorithms();
+//    OpenSSL_add_all_ciphers();
+    add_ciphers();
     ERR_load_crypto_strings();
 
     /* Read private key */
@@ -181,4 +182,38 @@ void create_signature(FILE *fp_data)
         exit(1);
     }
 
+}
+
+
+void add_ciphers(void)
+{
+    EVP_add_cipher(EVP_des_cfb());
+    EVP_add_cipher(EVP_des_cfb1());
+    EVP_add_cipher(EVP_des_cfb8());
+    EVP_add_cipher(EVP_des_ede_cfb());
+    EVP_add_cipher(EVP_des_ede3_cfb());
+    EVP_add_cipher(EVP_des_ede3_cfb1());
+    EVP_add_cipher(EVP_des_ede3_cfb8());
+
+    EVP_add_cipher(EVP_des_ofb());
+    EVP_add_cipher(EVP_des_ede_ofb());
+    EVP_add_cipher(EVP_des_ede3_ofb());
+
+    EVP_add_cipher(EVP_desx_cbc());
+    EVP_add_cipher_alias(SN_desx_cbc, "DESX");
+    EVP_add_cipher_alias(SN_desx_cbc, "desx");
+
+    EVP_add_cipher(EVP_des_cbc());
+    EVP_add_cipher_alias(SN_des_cbc, "DES");
+    EVP_add_cipher_alias(SN_des_cbc, "des");
+    EVP_add_cipher(EVP_des_ede_cbc());
+    EVP_add_cipher(EVP_des_ede3_cbc());
+    EVP_add_cipher_alias(SN_des_ede3_cbc, "DES3");
+    EVP_add_cipher_alias(SN_des_ede3_cbc, "des3");
+
+    EVP_add_cipher(EVP_des_ecb());
+    EVP_add_cipher(EVP_des_ede());
+    EVP_add_cipher(EVP_des_ede3());
+    EVP_add_cipher(EVP_des_ede3_wrap());
+    EVP_add_cipher_alias(SN_id_smime_alg_CMS3DESwrap, "des3-wrap");
 }
